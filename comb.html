@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Animations */
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Left Panel - Branding */
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease infinite;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: white;
+        }
+
+        .left-panel h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .left-panel p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            text-align: center;
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        .brand-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            font-size: 3rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .left-panel h1 {
+            animation: fadeInLeft 0.8s ease forwards;
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+
+        .left-panel > p {
+            animation: fadeInLeft 0.8s ease forwards;
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
+
+        /* Right Panel - Login Form */
+        .right-panel {
+            flex: 1;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-container h2 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 10px;
+            animation: fadeInRight 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .login-container .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1rem;
+            animation: fadeInRight 0.6s ease forwards;
+            animation-delay: 0.1s;
+            opacity: 0;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .form-group:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .form-group:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+            transform: scale(1.01);
+        }
+
+        .form-group input::placeholder {
+            color: #aaa;
+        }
+
+        #loginBtn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            animation: fadeInUp 0.6s ease forwards;
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
+
+        #loginBtn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
+        }
+
+        #loginBtn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        #loginMessage {
+            margin-top: 20px;
+            padding: 14px 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        #loginMessage.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            animation: bounceIn 0.5s ease forwards;
+        }
+
+        #loginMessage.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            animation: shake 0.5s ease forwards;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .left-panel {
+                padding: 60px 40px;
+            }
+
+            .left-panel h1 {
+                font-size: 2rem;
+            }
+
+            .brand-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Left Panel - Branding -->
+    <div class="left-panel">
+        <div class="brand-icon">🔐</div>
+        <h1>Welcome Back</h1>
+        <p>Sign in to access your account and continue where you left off.</p>
+    </div>
+
+    <!-- Right Panel - Login Form -->
+    <div class="right-panel">
+        <div class="login-container">
+            <h2>Sign In</h2>
+            <p class="subtitle">Enter your credentials to continue</p>
+
+            <div class="form-group">
+                <label for="Username">Username</label>
+                <input id="Username" type="text" placeholder="Enter your username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input id="password" type="password" placeholder="Enter your password">
+            </div>
+
+            <button type="button" id="loginBtn">Sign In</button>
+
+            <p id="loginMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        const loginBtn = document.getElementById("loginBtn");
+        const loginMessage = document.getElementById("loginMessage");
+
+        loginBtn.addEventListener("click", () => {
+            const Username = document.getElementById("Username").value;
+            const password = document.getElementById("password").value;
+
+            // Clear previous classes
+            loginMessage.classList.remove("success", "error");
+
+            if (Username === "RemiTinubu" && password === "Tinubastard1") {
+                loginMessage.textContent = "Login Successful! Welcome " + Username;
+                loginMessage.classList.add("success");
+            } else if (Username === "" || password === "") {
+                loginMessage.textContent = "Please fill in all fields";
+                loginMessage.classList.add("error");
+            } else {
+                loginMessage.textContent = "Invalid username or password";
+                loginMessage.classList.add("error");
+            }
+        });
+    </script>
+</body>
+</html>

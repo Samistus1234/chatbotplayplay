@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Main container wrapper */
+        body > p,
+        body > input,
+        body > button,
+        body > div {
+            position: relative;
+        }
+
+        /* Create a chat container effect */
+        body {
+            flex-direction: column;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(78, 205, 196, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Welcome text styling */
+        body > p:first-of-type {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 24px;
+            z-index: 1;
+            text-shadow: 0 2px 20px rgba(120, 119, 198, 0.5);
+            letter-spacing: -0.5px;
+            position: relative;
+        }
+
+        body > p:first-of-type::after {
+            content: '🤖';
+            margin-left: 12px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Input styling */
+        #message {
+            width: 100%;
+            max-width: 500px;
+            padding: 18px 24px;
+            font-size: 1rem;
+            font-family: inherit;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: #ffffff;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+            margin-bottom: 16px;
+        }
+
+        #message::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 400;
+        }
+
+        #message:focus {
+            border-color: #7877c6;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 
+                0 0 0 4px rgba(120, 119, 198, 0.2),
+                0 8px 32px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Button styling */
+        #sendBtn {
+            padding: 18px 48px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #ffffff;
+            background: linear-gradient(135deg, #7877c6 0%, #6366f1 50%, #8b5cf6 100%);
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        #sendBtn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        #sendBtn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
+        }
+
+        #sendBtn:hover::before {
+            left: 100%;
+        }
+
+        #sendBtn:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        /* Chat container styling */
+        #ChatBot {
+            width: 100%;
+            max-width: 600px;
+            min-height: 400px;
+            max-height: 60vh;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 24px;
+            overflow-y: auto;
+            z-index: 1;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Custom scrollbar */
+        #ChatBot::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #ChatBot::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        #ChatBot::-webkit-scrollbar-thumb {
+            background: rgba(120, 119, 198, 0.5);
+            border-radius: 3px;
+        }
+
+        #ChatBot::-webkit-scrollbar-thumb:hover {
+            background: rgba(120, 119, 198, 0.7);
+        }
+
+        /* Chat message bubbles */
+        #ChatBot p {
+            background: linear-gradient(135deg, #7877c6 0%, #6366f1 100%);
+            color: #ffffff;
+            padding: 14px 20px;
+            border-radius: 20px 20px 6px 20px;
+            max-width: 85%;
+            align-self: flex-end;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            animation: messageSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        #ChatBot p::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: -8px;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, transparent 50%, #6366f1 50%);
+            border-radius: 0 0 0 20px;
+            display: none;
+        }
+
+        /* Alternating message styles for visual variety */
+        #ChatBot p:nth-child(even) {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            align-self: flex-start;
+            border-radius: 20px 20px 20px 6px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Empty state styling */
+        #ChatBot:empty::before {
+            content: 'Start chatting... 💬';
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 1rem;
+            text-align: center;
+            display: block;
+            margin: auto;
+            padding: 40px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            body > p:first-of-type {
+                font-size: 1.4rem;
+            }
+
+            #message {
+                padding: 16px 20px;
+                font-size: 0.95rem;
+            }
+
+            #sendBtn {
+                padding: 16px 36px;
+                width: 100%;
+                max-width: 500px;
+            }
+
+            #ChatBot {
+                padding: 16px;
+                min-height: 300px;
+            }
+
+            #ChatBot p {
+                padding: 12px 16px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Focus visible for accessibility */
+        #message:focus-visible,
+        #sendBtn:focus-visible {
+            outline: 2px solid #7877c6;
+            outline-offset: 2px;
+        }
+
+        /* Hover effect on messages */
+        #ChatBot p:hover {
+            transform: scale(1.01);
+            transition: transform 0.2s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <p>Welcome to my ChatBot</p>
+    <input id="message" type="text" placeholder="Type out your text here aboki">
+    <button id="sendBtn">Send</button>
+
+    <div id="ChatBot">
+
+
+    </div>
+
+    <script>
+        const messageInput = document.getElementById("message");
+        const sendBtn = document.getElementById("sendBtn");
+        const chatBot = document.getElementById("ChatBot");
+    
+
+
+
+    sendBtn.addEventListener("click", () => {
+    const message = document.createElement("p");
+    message.textContent = messageInput.value;
+    chatBot.appendChild(message);
+    messageInput.value ="";
+
+    })
+    </script>
+
+</body>
+</html>
